@@ -133,5 +133,7 @@ public class OrderVO implements Serializable {
 
     @Schema(description = "订单类型名称")
     private String orderTypeName ;
+    @Schema(description = "订单编号")
+    private String orderNumber;
 
 }
