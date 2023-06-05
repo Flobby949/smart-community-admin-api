@@ -120,7 +120,7 @@
     </select>
 
     <select id="getListByNotInRoleId" resultType="com.soft2242.one.system.vo.SysUserInfoVO">
-        select t1.id,
+        select distinct t1.id,
         t1.username,
         t2.real_name,
         t2.admin_id,
@@ -135,10 +135,12 @@
         and t1.deleted = 0
         and t2.deleted = 0
         and t3.deleted = 0
-        and t3.admin_id not in
-        <foreach collection="excludeAdminIdList" item="item" open="(" close=")" separator=",">
-            #{item}
-        </foreach>
+        <if test="!excludeAdminIdList.isEmpty()">
+            and t3.admin_id not in
+            <foreach collection="excludeAdminIdList" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
         <if test="username != null and username.trim() != ''">
             and t1.username = #{username}
         </if>
