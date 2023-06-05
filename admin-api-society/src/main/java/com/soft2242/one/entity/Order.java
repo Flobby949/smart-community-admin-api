@@ -121,5 +121,9 @@ public class Order implements Serializable {
 
     private LocalDateTime endTime;
 
+    /**
+     * 订单编号
+     */
+    private String orderNumber;
 
 }
