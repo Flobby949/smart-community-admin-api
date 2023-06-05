@@ -72,7 +72,6 @@ public class SysDictTypeController {
     @PreAuthorize("hasAuthority('sys:dict:delete')")
     public Result<String> delete(@RequestBody List<Long> idList) {
         sysDictTypeService.delete(idList);
-
         return Result.ok();
     }
 
@@ -80,7 +79,6 @@ public class SysDictTypeController {
     @Operation(summary = "全部字典数据")
     public Result<List<SysDictVO>> all() {
         List<SysDictVO> dictList = sysDictTypeService.getDictList();
-
         return Result.ok(dictList);
     }
 
