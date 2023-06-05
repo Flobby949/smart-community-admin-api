@@ -155,17 +155,17 @@ public class OrderServiceImpl extends BaseServiceImpl<OrderMapper, Order> implem
         return new PageResult<>(changeVO(orderVOS), page.getTotal());
     }
 
-
+    /**
+     *  生成订单编号的规则：根据houseid和communityid存储订单
+     *  客户端通过houseid 或者 userid获取订单
+     *
+     *  管理平台如下：
+     *      houseid唯一，用房屋匹配水电物业费，通过houseid找到userid（业主表）
+     *      条件判断，业主表不存在userid则不插入
+     */
     @Override
     public void save(OrderVO vo) {
-        /**
-         *  生成订单编号的规则：根据houseid和communityid存储订单
-         *  客户端通过houseid 或者 userid获取订单
-         *
-         *  管理平台如下：
-         *      houseid唯一，用房屋匹配水电物业费，通过houseid找到userid（业主表）
-         *      条件判断，业主表不存在userid则不插入
-         */
+
         Order order = OrderConvert.INSTANCE.convert(vo);
 //        houseid
         Long houseId = order.getHouseId();
@@ -175,6 +175,7 @@ public class OrderServiceImpl extends BaseServiceImpl<OrderMapper, Order> implem
             if (owner != null) {
                 Long userId = owner.getUserId();
                 order.setUserId(userId);
+                order.setOwnerId(owner.getId());
             } else {
 //            若不存在则插入为0
                 order.setUserId(0L);
