@@ -21,7 +21,6 @@ public class OwnerQuery extends Query {
     private String communityName;
     @Schema(description = "起始条数")
     private Integer start;
-    @NotNull(message = "状态不能为空")
     @Schema(description = "状态")
     private Integer state;
 
