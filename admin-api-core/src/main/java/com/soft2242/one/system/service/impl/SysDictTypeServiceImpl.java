@@ -76,6 +76,13 @@ public class SysDictTypeServiceImpl extends BaseServiceImpl<SysDictTypeDao, SysD
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(List<Long> idList) {
+        for (Long id : idList) {
+            List<SysDictDataEntity> dictDataList = sysDictDataDao.selectList(new QueryWrapper<SysDictDataEntity>().eq("dict_type_id", id));
+            if (dictDataList.size() > 0){
+                SysDictTypeEntity sysDictTypeEntity = baseMapper.selectById(id);
+                throw new ServerException("请先删除该数据字典类型:"+sysDictTypeEntity.getDictType() + "下的字典值");
+            }
+        }
         removeByIds(idList);
     }
 

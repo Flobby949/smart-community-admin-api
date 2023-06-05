@@ -69,8 +69,8 @@ public class SysDictDataController {
     @Operation(summary = "删除")
     @PreAuthorize("hasAuthority('sys:dict:delete')")
     public Result<String> delete(@RequestBody List<Long> idList) {
-        sysDictDataService.delete(idList);
 
+        sysDictDataService.delete(idList);
         return Result.ok();
     }
 
