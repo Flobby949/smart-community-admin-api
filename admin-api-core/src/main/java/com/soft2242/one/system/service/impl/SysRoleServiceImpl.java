@@ -13,6 +13,7 @@ import com.soft2242.one.base.security.utils.TokenUtils;
 import com.soft2242.one.system.convert.SysRoleConvert;
 import com.soft2242.one.system.convert.SysRoleOperationLogConvert;
 import com.soft2242.one.system.dao.SysRoleDao;
+import com.soft2242.one.system.entity.SysDepartmentEntity;
 import com.soft2242.one.system.entity.SysRoleEntity;
 import com.soft2242.one.system.entity.SysRoleOperationLogEntity;
 import com.soft2242.one.system.entity.SysUserInfoEntity;
@@ -72,9 +73,14 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleDao, SysRoleEntit
 
     @Override
     public List<SysRoleVO> getList(SysRoleQuery query) {
-        List<SysRoleEntity> entityList = baseMapper.selectList(getWrapper(query));
+        Map<String, Object> params = new HashMap<>();
 
-        return SysRoleConvert.INSTANCE.convertList(entityList);
+        // 数据权限
+        params.put(Constant.DATA_SCOPE, getDataScope("t3", "department_id"));
+
+        List<SysRoleEntity> list = baseMapper.getList(params);
+
+        return SysRoleConvert.INSTANCE.convertList(list);
     }
 
     private Wrapper<SysRoleEntity> getWrapper(SysRoleQuery query) {
