@@ -1,20 +1,23 @@
 package com.soft2242.one.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.AllArgsConstructor;
 import com.soft2242.one.base.common.utils.PageResult;
 import com.soft2242.one.base.common.utils.Result;
 import com.soft2242.one.convert.DoorConvert;
 import com.soft2242.one.entity.DoorEntity;
-import com.soft2242.one.service.DoorService;
 import com.soft2242.one.query.DoorQuery;
+import com.soft2242.one.service.DoorService;
+import com.soft2242.one.storage.service.StorageService;
 import com.soft2242.one.vo.DoorVO;
+import com.soft2242.one.vo.SysFileUploadVO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import jakarta.validation.Valid;
 import java.util.List;
 
 /**
@@ -29,6 +32,7 @@ import java.util.List;
 @AllArgsConstructor
 public class DoorController {
     private final DoorService doorService;
+    private final StorageService storageService;
 
     @GetMapping("page")
     @Operation(summary = "分页")
@@ -80,5 +84,23 @@ public class DoorController {
     public Result<List<DoorEntity>> all(){
 
         return Result.ok(doorService.list());
+    }
+
+    @PostMapping("upload")
+    @Operation(summary = "上传门禁图片")
+    public Result<SysFileUploadVO> upload(@RequestParam("file") MultipartFile file) throws Exception {
+        if (file.isEmpty()) {
+            return Result.error("请选择需要上传的文件");
+        }
+        // 上传路径
+        String path = storageService.getPath(file.getOriginalFilename());
+        // 上传文件
+        String url = storageService.upload(file.getBytes(), path);
+        SysFileUploadVO vo = new SysFileUploadVO();
+        vo.setUrl(url);
+        vo.setSize(file.getSize());
+        vo.setName(file.getOriginalFilename());
+        vo.setPlatform(storageService.properties.getConfig().getType().name());
+        return Result.ok(vo);
     }
 }

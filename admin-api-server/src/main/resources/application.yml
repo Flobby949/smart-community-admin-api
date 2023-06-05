@@ -34,11 +34,32 @@ spring:
 storage:
   enabled: true
   config:
-    # 存储类型：local、aliyun、tencent、qiniu、huawei、minio
-    type: local
-    domain: http://localhost:8080
+    # 存储类型：local、aliyun、minio
+    #    type: local
+    #    domain: http://106.14.246.27:8080
+    #    type: aliyun
+    #    domain: https://flobby529.oss-cn-nanjing.aliyuncs.com
+    type: minio
   local:
-    path: /Users/moqi/Documents/upload
+    path: /root/admin/appendix
+  aliyun:
+    access-key-id: LTAI5tRU6tDBC2RWtKsvShLZ
+    access-key-secret: 7Q4sljdCFMLxMpPv7axRoPA3Yglrec
+    end-point: oss-cn-nanjing.aliyuncs.com
+    bucket-name: flobby529
+  minio:
+    access-key: admin
+    secret-key: 12345678
+    end-point: http://106.14.246.27:9000
+    bucket-name: flobby
+
+aliyun:
+  sms:
+    platform: 0
+    signName: FlobbyApp
+    templateId: SMS_206546276
+    accessKey: LTAI5tRU6tDBC2RWtKsvShLZ
+    secretKey: 7Q4sljdCFMLxMpPv7axRoPA3Yglrec
 
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml
