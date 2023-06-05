@@ -18,6 +18,7 @@
     <select id="getList" resultType="com.soft2242.one.system.entity.SysDepartmentEntity">
         select t1.*, (select t2.name from sys_department t2 where t2.id = t1.pid) parentName
         from sys_department t1
+        left join sys_admin_department t3 on t1.id = t3.department_id
         where t1.deleted = 0
         order by t1.sort
     </select>
