@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * <p>
@@ -42,7 +43,6 @@ public class OrderController {
     private final ICommunityService communityService;
 
 
-
     @GetMapping("page")
     @Operation(summary = "分页查询")
     public Result<PageResult<OrderVO>> page(@ParameterObject @Valid OrderQuery query) {
@@ -60,7 +60,6 @@ public class OrderController {
     }
 
 
-
     @GetMapping("{id}")
     @Operation(summary = "账单查询")
     public Result<OrderVO> get(@PathVariable("id") Long id) {
@@ -72,8 +71,15 @@ public class OrderController {
     @PostMapping
     @Operation(summary = "生成订单")
     public Result<String> create(@Valid @RequestBody OrderVO vo) {
-        orderSevice.save(vo);
-        return Result.ok();
+        vo.setOrderNumber(UUID.randomUUID().toString());
+
+        if (vo.getPrice() == null || vo.getPrice().isBlank() || vo.getPrice().isEmpty() || vo.getAmount() == null) {
+            return Result.error("输入不能为空");
+        } else {
+            orderSevice.save(vo);
+            return Result.ok();
+
+        }
 
     }
 
@@ -110,6 +116,7 @@ public class OrderController {
     public void export() {
         orderSevice.export();
     }
+
     @GetMapping("exportCount")
     @Operation(summary = "批量导出统计订单")
     public void export2() {
@@ -120,16 +127,18 @@ public class OrderController {
     @DeleteMapping
     @Operation(summary = "批量删除")
 //    @PreAuthorize("hasAuthority('soft2242:type:delete')")
-    public Result<String> delete(@RequestBody List<Long> idList){
+    public Result<String> delete(@RequestBody List<Long> idList) {
         orderSevice.delete(idList);
         return Result.ok();
     }
+
     @GetMapping("list")
     @Operation(summary = "获取房屋列表")
     public Result<List<HouseVO>> list() {
         List<HouseVO> list = houseService.getList();
         return Result.ok(list);
     }
+
     @GetMapping("community")
     @Operation(summary = "获取小区列表")
     public Result<List<CommunityVO>> communityList() {
@@ -157,7 +166,6 @@ public class OrderController {
     public Result<List<OrderRecordVO>> getRecord() {
         return Result.ok(orderSevice.getRecordList());
     }
-
 
 
 }

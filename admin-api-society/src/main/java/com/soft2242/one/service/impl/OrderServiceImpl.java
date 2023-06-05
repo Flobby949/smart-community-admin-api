@@ -9,7 +9,6 @@ import com.soft2242.one.base.common.utils.PageResult;
 import com.soft2242.one.base.mybatis.service.impl.BaseServiceImpl;
 import com.soft2242.one.convert.OrderConvert;
 import com.soft2242.one.dao.OrderMapper;
-import com.soft2242.one.entity.Activity;
 import com.soft2242.one.entity.House;
 import com.soft2242.one.entity.Order;
 import com.soft2242.one.query.OrderQuery;
@@ -22,16 +21,17 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
-import org.apache.poi.ss.formula.functions.Odd;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import com.soft2242.one.service.IHouseService;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * 服务实现类
@@ -153,7 +153,25 @@ public class OrderServiceImpl extends BaseServiceImpl<OrderMapper, Order> implem
 
     @Override
     public void save(OrderVO vo) {
-        baseMapper.insert(OrderConvert.INSTANCE.convert(vo));
+//        生成订单编号
+        Order order = OrderConvert.INSTANCE.convert(vo);
+        UUID uuid = UUID.randomUUID();
+        System.out.println(vo);
+        System.out.println(vo);
+        System.out.println(vo);
+        System.out.println(vo);
+        System.out.println(vo);
+//        计算价格
+        try {
+            double v = Double.parseDouble(vo.getPrice());
+            Double amount = vo.getAmount();
+            double money = new BigDecimal(amount * v).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+            order.setMoney(money);
+            order.setOrderNumber(uuid.toString());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        baseMapper.insert(order);
     }
 
     @Override

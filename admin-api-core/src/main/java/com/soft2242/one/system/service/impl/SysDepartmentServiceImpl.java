@@ -42,7 +42,7 @@ public class SysDepartmentServiceImpl extends BaseServiceImpl<SysDepartmentDao, 
         Map<String, Object> params = new HashMap<>();
 
         // 数据权限
-        params.put(Constant.DATA_SCOPE, getDataScope("t1", "id"));
+        params.put(Constant.DATA_SCOPE, getDataScope("t3", "department_id"));
 
         // 机构列表
         List<SysDepartmentEntity> entityList = baseMapper.getList(params);

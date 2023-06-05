@@ -21,33 +21,3 @@ spring:
       max-lifetime: 1800000         # 连接的生命时长（毫秒），超时而且没被使用则被释放（retired），默认： 30 分钟
       connection-test-query: SELECT 1
       pool-name: MyHikariCP
-
-#storage:
-#  enabled: true
-#  config:
-#    # 存储类型：local、aliyun、minio
-#    type: local
-#    domain: http://localhost:8080
-#  local:
-#    path: /Users/moqi/Documents/upload
-
-storage:
-  enabled: true
-  config:
-    type: minio
-  minio:
-    access-key: admin
-    secret-key: 12345678
-    end-point: http://43.137.12.232:9000
-    bucket-name: images
-
-#storage:
-#  enabled: true
-#  config:
-#    type: aliyun
-#    domain: https://mqxu-oss.oss-cn-hangzhou.aliyuncs.com
-#  aliyun:
-#    access-key-id: xxxxx
-#    access-key-secret: xxxxx
-#    end-point: oss-cn-hangzhou.aliyuncs.com
-#    bucket-name: mqxu-oss

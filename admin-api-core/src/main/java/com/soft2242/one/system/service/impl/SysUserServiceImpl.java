@@ -181,6 +181,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserInfoDao, SysUserI
     public PageResult<SysUserInfoVO> page(SysUserQuery query) {
         // 查询参数
         Map<String, Object> params = getParams(query);
+        System.out.println(params);
         // 分页查询
         IPage<SysUserInfoEntity> page = getPage(query);
         params.put(Constant.PAGE, page);
