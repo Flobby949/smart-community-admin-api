@@ -11,6 +11,7 @@ import com.soft2242.one.convert.OrderConvert;
 import com.soft2242.one.dao.OrderMapper;
 import com.soft2242.one.entity.House;
 import com.soft2242.one.entity.Order;
+import com.soft2242.one.entity.OwnerEntity;
 import com.soft2242.one.query.OrderQuery;
 import com.soft2242.one.service.ICommunityService;
 import com.soft2242.one.service.IOrderService;
@@ -21,6 +22,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
+import org.jacoco.agent.rt.internal_43f5073.core.internal.flow.IFrame;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,6 +34,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import com.soft2242.one.service.OwnerService;
 
 /**
  * 服务实现类
@@ -46,6 +50,7 @@ public class OrderServiceImpl extends BaseServiceImpl<OrderMapper, Order> implem
     //    @Autowired
     private final IHouseService houseService;
     private final ICommunityService communityService;
+    private final OwnerService ownerService;
 
 
     private LambdaQueryWrapper<Order> getWrapper(OrderQuery query) {
@@ -153,14 +158,29 @@ public class OrderServiceImpl extends BaseServiceImpl<OrderMapper, Order> implem
 
     @Override
     public void save(OrderVO vo) {
-//        生成订单编号
+        /**
+         *  生成订单编号的规则：根据houseid和communityid存储订单
+         *  客户端通过houseid 或者 userid获取订单
+         *
+         *  管理平台如下：
+         *      houseid唯一，用房屋匹配水电物业费，通过houseid找到userid（业主表）
+         *      条件判断，业主表不存在userid则不插入
+         */
         Order order = OrderConvert.INSTANCE.convert(vo);
+//        houseid
+        Long houseId = order.getHouseId();
+        OwnerEntity owner = ownerService.getOne(Wrappers.<OwnerEntity>lambdaQuery().eq(OwnerEntity::getHouseId, houseId));
+
+        if (houseId != null)
+            if (owner != null) {
+                Long userId = owner.getUserId();
+                order.setUserId(userId);
+            } else {
+//            若不存在则插入为0
+                order.setUserId(0L);
+            }
+//        插入订单编号
         UUID uuid = UUID.randomUUID();
-        System.out.println(vo);
-        System.out.println(vo);
-        System.out.println(vo);
-        System.out.println(vo);
-        System.out.println(vo);
 //        计算价格
         try {
             double v = Double.parseDouble(vo.getPrice());

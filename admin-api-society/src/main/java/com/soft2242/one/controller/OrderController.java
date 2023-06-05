@@ -136,6 +136,10 @@ public class OrderController {
     @Operation(summary = "获取房屋列表")
     public Result<List<HouseVO>> list() {
         List<HouseVO> list = houseService.getList();
+        list.forEach(houseVO -> {
+            String communityName = communityService.getById(houseVO.getCommunityId()).getCommunityName();
+            houseVO.setHouseNumber(communityName+"-"+houseVO.getHouseNumber());
+        });
         return Result.ok(list);
     }
 
