@@ -13,6 +13,7 @@ import com.soft2242.one.base.security.utils.TokenUtils;
 import com.soft2242.one.system.convert.SysRoleConvert;
 import com.soft2242.one.system.convert.SysRoleOperationLogConvert;
 import com.soft2242.one.system.dao.SysRoleDao;
+import com.soft2242.one.system.entity.SysDepartmentEntity;
 import com.soft2242.one.system.entity.SysRoleEntity;
 import com.soft2242.one.system.entity.SysRoleOperationLogEntity;
 import com.soft2242.one.system.entity.SysUserInfoEntity;
@@ -49,16 +50,37 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleDao, SysRoleEntit
     private final SysUserService sysUserService;
     @Override
     public PageResult<SysRoleVO> page(SysRoleQuery query) {
-        IPage<SysRoleEntity> page = baseMapper.selectPage(getPage(query), getWrapper(query));
+        // 查询参数
+        Map<String, Object> params = getParams(query);
+        System.out.println(params);
+        // 分页查询
+        IPage<SysRoleEntity> page = getPage(query);
+        params.put(Constant.PAGE, page);
 
-        return new PageResult<>(SysRoleConvert.INSTANCE.convertList(page.getRecords()), page.getTotal());
+        // 数据列表
+        List<SysRoleEntity> list = baseMapper.getList(params);
+        List<SysRoleVO> vo = SysRoleConvert.INSTANCE.convertList(list);
+        return new PageResult<>(vo, page.getTotal());
+    }
+
+    private Map<String, Object> getParams(SysRoleQuery query) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("name",query.getName());
+
+        params.put(Constant.DATA_SCOPE, getDataScope("t3", "department_id"));
+        return params;
     }
 
     @Override
     public List<SysRoleVO> getList(SysRoleQuery query) {
-        List<SysRoleEntity> entityList = baseMapper.selectList(getWrapper(query));
+        Map<String, Object> params = new HashMap<>();
 
-        return SysRoleConvert.INSTANCE.convertList(entityList);
+        // 数据权限
+        params.put(Constant.DATA_SCOPE, getDataScope("t3", "department_id"));
+
+        List<SysRoleEntity> list = baseMapper.getList(params);
+
+        return SysRoleConvert.INSTANCE.convertList(list);
     }
 
     private Wrapper<SysRoleEntity> getWrapper(SysRoleQuery query) {
