@@ -23,8 +23,11 @@
         <result property="updateTime" column="update_time"/>
     </resultMap>
     <select id="findOwnerRecordByOQ" resultType="int">
-        SELECT COUNT(*) FROM t_owner b WHERE  b.state=#{state} AND b.deleted=0 AND
-            b.identity=0 AND b.house_id IN(
+        SELECT COUNT(*) FROM t_owner b WHERE b.deleted=0
+        <if test="state!=null and state!=''">
+                AND b.state=#{state}
+        </if>
+                AND b.identity=0 AND b.house_id IN(
                 SELECT id FROM t_house
         <where>
             <if test="communityName!=null and communityName!=''">
@@ -37,8 +40,11 @@
         SELECT b.id,c.avatar,c.username,
                CONCAT(a.community_name,a.building_name,a.units,'单元',a.house_number) as houseName,
                c.real_name,c.phone,b.identity_card,b.identity,b.update_time,b.state
-               FROM t_house a,t_owner b,t_user c WHERE  b.state=#{state} AND b.deleted=0 AND
-            b.identity=0 AND b.house_id IN(
+               FROM t_house a,t_owner b,t_user c WHERE b.deleted=0
+            <if test="state!=null and state!=''">
+                AND b.state=#{state}
+            </if>
+                    AND b.identity=0 AND b.house_id IN(
                 SELECT id FROM t_house
         <where>
             <if test="communityName!=null and communityName!=''">
