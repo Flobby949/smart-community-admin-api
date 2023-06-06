@@ -76,11 +76,10 @@ public class OrderController {
         if (vo.getPrice() == null || vo.getPrice().isBlank() || vo.getPrice().isEmpty() || vo.getAmount() == null) {
             return Result.error("输入不能为空");
         } else {
-            orderSevice.save(vo);
+            if (orderSevice.save(vo)==0)
+                return Result.error("房屋不存在业主,或业主在审核中！");
             return Result.ok();
-
         }
-
     }
 
     @PutMapping

@@ -27,7 +27,7 @@ public interface IOrderService extends BaseService<Order> {
 //    分页抄表
     PageResult<OrderVO> recordPage(OrderQuery query);
 
-    void save(OrderVO vo);
+    int save(OrderVO vo);
 
     void update(OrderVO vo);
     void delete(List<Long> idList);
