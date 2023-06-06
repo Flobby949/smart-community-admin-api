@@ -156,30 +156,35 @@ public class OrderServiceImpl extends BaseServiceImpl<OrderMapper, Order> implem
     }
 
     /**
-     *  生成订单编号的规则：根据houseid和communityid存储订单
-     *  客户端通过houseid 或者 userid获取订单
-     *
-     *  管理平台如下：
-     *      houseid唯一，用房屋匹配水电物业费，通过houseid找到userid（业主表）
-     *      条件判断，业主表不存在userid则不插入
+     * 生成订单编号的规则：根据houseid和communityid存储订单
+     * 客户端通过houseid 或者 userid获取订单
+     * <p>
+     * 管理平台如下：
+     * houseid唯一，用房屋匹配水电物业费，通过houseid找到userid（业主表）
+     * 条件判断，业主表不存在userid则不插入
      */
     @Override
-    public void save(OrderVO vo) {
+    public int save(OrderVO vo) {
 
         Order order = OrderConvert.INSTANCE.convert(vo);
 //        houseid
         Long houseId = order.getHouseId();
-        OwnerEntity owner = ownerService.getOne(Wrappers.<OwnerEntity>lambdaQuery().eq(OwnerEntity::getHouseId, houseId));
+        OwnerEntity owner = ownerService.getOne(Wrappers.<OwnerEntity>lambdaQuery()
+                .eq(OwnerEntity::getHouseId, houseId)
+                .eq(OwnerEntity::getState, 1)
+                .eq(OwnerEntity::getDeleted,0));
 
-        if (houseId != null)
-            if (owner != null) {
-                Long userId = owner.getUserId();
-                order.setUserId(userId);
-                order.setOwnerId(owner.getId());
-            } else {
-//            若不存在则插入为0
-                order.setUserId(0L);
-            }
+        if (houseId != null && owner != null && owner.getHouseId()!=null  && owner.getId()!=null) {
+
+            Long userId = owner.getUserId();
+            order.setUserId(userId);
+
+            order.setOwnerId(owner.getId());//            插入业主id
+            order.setHouseId(owner.getHouseId());
+        } else {
+//            若不存在则退出
+            return 0;
+        }
 //        插入订单编号
         UUID uuid = UUID.randomUUID();
 //        计算价格
@@ -193,6 +198,7 @@ public class OrderServiceImpl extends BaseServiceImpl<OrderMapper, Order> implem
             throw new RuntimeException(e);
         }
         baseMapper.insert(order);
+        return 1;
     }
 
     @Override
