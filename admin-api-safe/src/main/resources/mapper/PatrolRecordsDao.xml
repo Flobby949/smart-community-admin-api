@@ -9,7 +9,7 @@
         JOIN sys_admin_info b on b.ADMIN_ID=a.inspector_id
         JOIN sys_admin c on c.ID=b.ADMIN_ID
        
-            AND a.point_id =#{id}
+            AND a.point_id =#{id}  and a.status=1
     
         
 
