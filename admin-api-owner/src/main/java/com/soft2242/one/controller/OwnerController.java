@@ -91,6 +91,15 @@ public class OwnerController {
         OwnerVO list = ownerService.findOwnerInfo(id);
         return Result.ok(list);
     }
+    @GetMapping("family/{id}")
+    @Operation(summary = "家属/租户详细信息")
+    public Result<OwnerVO> familyInfo(@PathVariable("id") Long id){
+        QueryWrapper<OwnerEntity> wrapper = new QueryWrapper<>();
+        wrapper.lambda().select(OwnerEntity::getGender,OwnerEntity::getRealName,OwnerEntity::getIdentityCard,OwnerEntity::getPhone,OwnerEntity::getIdentity,OwnerEntity::getCreateTime).eq(OwnerEntity::getId,id);
+        OwnerEntity one = ownerService.getOne(wrapper);
+        OwnerVO vo = OwnerConvert.INSTANCE.convert(one);
+        return Result.ok(vo);
+    }
     @PostMapping("approvedApply")
     @Operation(summary = "审核通过业主申请")
     public Result<String> approvedApply(@RequestBody Map<String, Long> body){
