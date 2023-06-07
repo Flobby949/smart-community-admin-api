@@ -16,6 +16,7 @@
     <modules>
         <module>storage-plugin</module>
         <module>sms-plugin</module>
+        <module>device-plugin</module>
     </modules>
 
 </project>

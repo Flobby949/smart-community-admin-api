@@ -3,13 +3,18 @@ package com.soft2242.one.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.soft2242.one.base.common.exception.ServerException;
 import com.soft2242.one.base.common.utils.PageResult;
 import com.soft2242.one.base.mybatis.service.impl.BaseServiceImpl;
+import com.soft2242.one.constant.OpenConstant;
 import com.soft2242.one.convert.MonitorConvert;
 import com.soft2242.one.dao.MonitorDao;
 import com.soft2242.one.entity.MonitorEntity;
+import com.soft2242.one.entity.ResponseBody;
 import com.soft2242.one.query.MonitorQuery;
+import com.soft2242.one.service.DeviceService;
 import com.soft2242.one.service.MonitorService;
+import com.soft2242.one.utils.EsOpenUtil;
 import com.soft2242.one.vo.MonitorVO;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -27,6 +32,7 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class MonitorServiceImpl extends BaseServiceImpl<MonitorDao, MonitorEntity> implements MonitorService {
+    private DeviceService deviceService;
 
     @Override
     public PageResult<MonitorVO> page(MonitorQuery query) {
@@ -62,6 +68,15 @@ public class MonitorServiceImpl extends BaseServiceImpl<MonitorDao, MonitorEntit
     @Transactional(rollbackFor = Exception.class)
     public void delete(List<Long> idList) {
         removeByIds(idList);
+    }
+
+    @Override
+    public String getLiveUrl(Long id) {
+        ResponseBody body = EsOpenUtil.getVideoUrl(deviceService.getById(id).getDeviceSerial());
+        if (!body.getCode().equals(OpenConstant.CODE)) {
+            throw new ServerException("直播地址获取失败");
+        }
+        return body.getData().getString("url");
     }
 
 }

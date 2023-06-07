@@ -4,16 +4,13 @@
 <mapper namespace="com.soft2242.one.dao.DeviceDao">
 
     <select id="selectDeviceByPage" resultType="com.soft2242.one.vo.DeviceVO" parameterType="com.soft2242.one.query.DeviceQuery">
-        SELECT d.id as id, d.device_name, d.status, d.device_type, dt.type as deviceTypeName, d.address,
+        SELECT d.id as id, d.device_name, d.status, d.device_type, dt.type as deviceTypeName, d.device_serial,
         d.qr_code, d.deleted, d.create_time, d.creator, d.update_time, d.updater
         FROM t_device d
         LEFT JOIN t_device_type dt on d.device_type = dt.id
         WHERE d.deleted = 0
         <if test="deviceName != null and deviceName.trim() != ''">
             AND d.device_name like "%"#{deviceName}"%"
-        </if>
-        <if test="address != null and address.trim() != ''">
-            AND d.address like "%"#{address}"%"
         </if>
         <if test="deviceType != null">
             AND d.device_type = #{deviceType}

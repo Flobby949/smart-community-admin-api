@@ -34,8 +34,8 @@ public class DeviceVO implements Serializable {
 	@Schema(description = "设备类别")
 	private String deviceTypeName;
 
-	@Schema(description = "设备位置")
-	private String address;
+	@Schema(description = "设备序列号")
+	private String deviceSerial;
 
 	@Schema(description = "设备二维码url")
 	private String qrCode;

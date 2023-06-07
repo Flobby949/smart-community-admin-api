@@ -24,7 +24,4 @@ public class DeviceQuery extends Query {
     @Schema(description = "设备类别id")
     private Long deviceType;
 
-    @Schema(description = "设备位置")
-    private String address;
-
 }
