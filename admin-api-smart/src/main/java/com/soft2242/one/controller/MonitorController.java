@@ -73,4 +73,11 @@ public class MonitorController {
 
         return Result.ok();
     }
+
+    @GetMapping("live/{deviceId}")
+    @Operation(summary = "获取监控直播地址")
+    public Result<String> getLiveUrl(@PathVariable Long deviceId) {
+        return Result.ok(monitorService.getLiveUrl(deviceId));
+    }
+
 }

@@ -32,9 +32,9 @@ public class DeviceEntity extends BaseEntity {
 	private Long deviceType;
 
 	/**
-	* 设备位置
+	* 设备序列号
 	*/
-	private String address;
+	private String deviceSerial;
 
 	/**
 	* 设备二维码url

@@ -23,6 +23,4 @@ public interface DeviceService extends BaseService<DeviceEntity> {
     void update(DeviceVO vo);
 
     void delete(List<Long> idList);
-
-
 }

@@ -23,4 +23,6 @@ public interface MonitorService extends BaseService<MonitorEntity> {
     void update(MonitorVO vo);
 
     void delete(List<Long> idList);
+
+    String getLiveUrl(Long id);
 }

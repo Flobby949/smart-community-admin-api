@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.soft2242.one</groupId>
-        <artifactId>community-admin-api</artifactId>
+        <artifactId>api-plugin</artifactId>
         <version>1.0.0-RELEASES</version>
     </parent>
 
-    <artifactId>admin-api-smart</artifactId>
-    <description>智慧物联</description>
+    <artifactId>device-plugin</artifactId>
+    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
@@ -19,14 +19,9 @@
             <version>1.0.0-RELEASES</version>
         </dependency>
         <dependency>
-            <groupId>com.soft2242.one</groupId>
-            <artifactId>storage-plugin</artifactId>
-            <version>1.0.0-RELEASES</version>
-        </dependency>
-        <dependency>
-            <groupId>com.soft2242.one</groupId>
-            <artifactId>device-plugin</artifactId>
-            <version>1.0.0-RELEASES</version>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.3.5</version>
         </dependency>
     </dependencies>
 
