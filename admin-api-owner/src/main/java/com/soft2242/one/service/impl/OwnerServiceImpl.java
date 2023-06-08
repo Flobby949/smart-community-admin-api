@@ -1,28 +1,24 @@
 package com.soft2242.one.service.impl;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.soft2242.one.base.common.utils.PageResult;
 import com.soft2242.one.base.mybatis.service.impl.BaseServiceImpl;
-import lombok.AllArgsConstructor;
 import com.soft2242.one.convert.OwnerConvert;
+import com.soft2242.one.dao.OwnerDao;
+import com.soft2242.one.entity.House;
 import com.soft2242.one.entity.OwnerEntity;
 import com.soft2242.one.query.OwnerQuery;
-import com.soft2242.one.vo.OwnerVO;
-import com.soft2242.one.dao.OwnerDao;
+import com.soft2242.one.service.IHouseService;
 import com.soft2242.one.service.OwnerService;
-
-import org.apache.commons.lang3.StringUtils;
+import com.soft2242.one.vo.OwnerVO;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 
 /**
  * 业主表
@@ -33,7 +29,7 @@ import java.util.function.Function;
 @Service
 @AllArgsConstructor
 public class OwnerServiceImpl extends BaseServiceImpl<OwnerDao, OwnerEntity> implements OwnerService {
-
+    private final IHouseService houseService;
 
     @Override
     public PageResult<OwnerVO> page(OwnerQuery query) {
@@ -58,6 +54,9 @@ public class OwnerServiceImpl extends BaseServiceImpl<OwnerDao, OwnerEntity> imp
         LambdaUpdateWrapper<OwnerEntity> wrapper= Wrappers.lambdaUpdate();
         wrapper.set(OwnerEntity::getState,2).eq(OwnerEntity::getId,id);
         baseMapper.update(new OwnerEntity(),wrapper);
+        House house = houseService.getById(baseMapper.selectById(id).getHouseId());
+        house.setHouseStatus((byte) 0);
+        houseService.updateById(house);
     }
 
     private LambdaQueryWrapper<OwnerEntity> getWrapper(OwnerQuery query){

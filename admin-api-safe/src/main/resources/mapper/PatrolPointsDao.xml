@@ -29,6 +29,7 @@
                     #{item}
                 </foreach>
         </if>
+        
       
        
     
@@ -47,7 +48,7 @@
 
     </select>
     <select id="getByCommuntiyId" resultType="com.soft2242.one.entity.PatrolPointsEntity">
-        select id,point_name from  t_patrol_points where community_id=#{communtiyId}
+        select id,point_name from  t_patrol_points where community_id=#{communtiyId} and deleted=0
         
     </select>
 
