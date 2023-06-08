@@ -59,12 +59,13 @@ public class OwnerController {
     }
     @PostMapping("findFamily")
     @Operation(summary = "获取家庭成员信息")
-    public Result<List<OwnerEntity>> findFamily(Long ownerId){
+    public Result<List<OwnerVO>> findFamily(Long ownerId){
         QueryWrapper<OwnerEntity> wrapper = new QueryWrapper<>();
         wrapper.lambda().select(OwnerEntity::getRealName,OwnerEntity::getPhone,OwnerEntity::getIdentityCard,OwnerEntity::getIdentity,OwnerEntity::getGender,OwnerEntity::getId)
                 .eq(OwnerEntity::getOwnerId,ownerId).eq(OwnerEntity::getState,1).ne(OwnerEntity::getDeleted,1);
         List<OwnerEntity> list = ownerService.list(wrapper);
-        for(OwnerEntity owner:list){
+        List<OwnerVO> ownerVOS = OwnerConvert.INSTANCE.convertList(list);
+        for(OwnerVO owner:ownerVOS){
             QueryWrapper<UserEntity> queryWrapper = new QueryWrapper<>();
             queryWrapper.lambda().eq(UserEntity::getPhone,owner.getPhone());
             if(userService.count(queryWrapper)==0) {
@@ -73,7 +74,7 @@ public class OwnerController {
                 owner.setIsRegister(OwnerConstant.REGISTERED);
             }
         }
-        return Result.ok(list);
+        return Result.ok(ownerVOS);
     }
     @PostMapping("deFamily")
     @Operation(summary = "删除家庭成员")

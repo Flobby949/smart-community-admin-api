@@ -75,9 +75,5 @@ public class OwnerEntity extends BaseEntity {
 	* 状态(0:未审核1:已通过2:未通过)
 	*/
 	private Integer state;
-	/**
-	 * 是否注册
-	 */
-	private String isRegister;
 
 }

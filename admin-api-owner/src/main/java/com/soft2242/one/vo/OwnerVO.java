@@ -69,6 +69,8 @@ public class OwnerVO implements Serializable {
 
 	@Schema(description = "状态(0:未审核1:已通过2:未通过)")
 	private Integer state;
+	@Schema(description = "是否注册")
+	private String isRegister;
 
 	@Schema(description = "删除标识(0:未删除 1:已删除)")
 	private Integer deleted;
