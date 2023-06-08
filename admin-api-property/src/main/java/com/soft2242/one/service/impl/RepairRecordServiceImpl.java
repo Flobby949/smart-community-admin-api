@@ -11,6 +11,7 @@ import com.soft2242.one.dao.RepairRecordDao;
 import com.soft2242.one.entity.RepairRecordEntity;
 import com.soft2242.one.query.RepairRecordQuery;
 import com.soft2242.one.service.RepairRecordService;
+import com.soft2242.one.utils.MyUtils;
 import com.soft2242.one.vo.RepairRecordVO;
 import com.soft2242.one.vo.RepairVO;
 import lombok.AllArgsConstructor;
@@ -56,38 +57,53 @@ public class RepairRecordServiceImpl extends BaseServiceImpl<RepairRecordDao, Re
     @Override
     public void sOrUOrD(HashMap<String, Object> map) {
         Object repairId = map.get("repairId");
+        String[] eIds = (String[]) map.get("eIds");
         //先得到这个报修的记录
         LambdaQueryWrapper<RepairRecordEntity> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(RepairRecordEntity::getRepairId, repairId);
         List<RepairRecordEntity> list = repairRecordDao.selectList(wrapper);
-
-        List<String> strings = list.stream().map(RepairRecordEntity::getEmployeeIds).toList();
-        HashSet<String> recordSet = new HashSet<String>(strings);
-        //得到负责人ids
-        String[] eIds = (String[]) map.get("eIds");
-        HashSet<String> handleSet = new HashSet<String>(Arrays.asList(eIds));
-        //之差(记录-处理),要删掉的数据
-        HashSet temSet = new HashSet<>(recordSet);
-        temSet.removeAll(handleSet);
-        if (!temSet.isEmpty()) {
-
-            wrapper = Wrappers.lambdaQuery();
-            wrapper.eq(RepairRecordEntity::getRepairId, repairId)
-                    .in(RepairRecordEntity::getEmployeeIds, temSet.toArray());
-            baseMapper.delete(wrapper);
+        if (list.size() > 0){
+            RepairRecordEntity repairRecordEntity = list.get(0);
+            repairRecordEntity.setEmployeeIds(MyUtils.convertToString(eIds));
+            updateById(repairRecordEntity);
+        }else {
+            RepairRecordEntity repairRecordEntity = new RepairRecordEntity();
+            repairRecordEntity.setRepairId((Long) repairId);
+            repairRecordEntity.setEmployeeIds(MyUtils.convertToString(eIds));
+            save(repairRecordEntity);
         }
-
-        //之差(处理-记录),要新增呢的数据
-        temSet = new HashSet<>(handleSet);
-        temSet.removeAll(recordSet);
-        if (!temSet.isEmpty()) {
-            for (Object id : temSet) {
-                RepairRecordEntity repairRecordEntity = new RepairRecordEntity();
-                repairRecordEntity.setRepairId((Long) repairId);
-                repairRecordEntity.setEmployeeIds(String.valueOf(id));
-                save(repairRecordEntity);
-            }
-        }
+//        RepairRecordEntity repairRecordEntity = new RepairRecordEntity();
+//        repairRecordEntity.setRepairId((Long) repairId);
+//        repairRecordEntity.setEmployeeIds(String.valueOf(id));
+//        save(repairRecordEntity);
+//        List<String> strings = list.stream().map(RepairRecordEntity::getEmployeeIds).toList();
+//        HashSet<String> recordSet = new HashSet<String>(strings);
+//        //得到负责人ids
+//        String[] eIds = (String[]) map.get("eIds");
+//        HashSet<String> handleSet = new HashSet<String>(Arrays.asList(eIds));
+//
+//        //之差(记录-处理),要删掉的数据
+//        HashSet temSet = new HashSet<>(recordSet);
+//        temSet.removeAll(handleSet);
+//        if (!temSet.isEmpty()) {
+//
+//            wrapper = Wrappers.lambdaQuery();
+//            wrapper.eq(RepairRecordEntity::getRepairId, repairId)
+//                    .in(RepairRecordEntity::getEmployeeIds, temSet.toArray());
+//            baseMapper.delete(wrapper);
+//        }
+//
+//        //之差(处理-记录),要新增呢的数据
+//        temSet = new HashSet<>(handleSet);
+//        temSet.removeAll(recordSet);
+//        if (!temSet.isEmpty()) {
+//            for (Object id : temSet) {
+//                RepairRecordEntity repairRecordEntity = new RepairRecordEntity();
+//                repairRecordEntity.setRepairId((Long) repairId);
+//                repairRecordEntity.setEmployeeIds(String.valueOf(id));
+//                save(repairRecordEntity);
+//            }
+//        }
 
         //公共数据，要修改数据
 //        temSet = new HashSet<>(handleSet);
