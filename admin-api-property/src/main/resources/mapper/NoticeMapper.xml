@@ -66,6 +66,9 @@
         <if test="adminId != null and adminId != 0">
             and t1.admin_id = #{adminId}
         </if>
+        <if test="createTime != null and createTime.length != 0">
+            and t1.create_time  between #{begin} and #{end}
+        </if>
     </select>
 
 

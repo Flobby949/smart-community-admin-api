@@ -19,6 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,7 @@ import java.util.Map;
 public class RepairServiceImpl extends BaseServiceImpl<RepairDao, RepairEntity> implements RepairService {
 
     private final RepairDao repairDao;
+
     @Override
     public PageResult<RepairVO> page(RepairQuery query) {
         Map<String, Object> map = new HashMap<>();
@@ -45,16 +47,25 @@ public class RepairServiceImpl extends BaseServiceImpl<RepairDao, RepairEntity> 
         IPage<RepairEntity> page = getPage(query);
         map.put("page", page);
         map.put("communityId", MyUtils.convertToString(query.getCommunityId()));
+        map.put("state",query.getState());
+        map.put("type", query.getType());
+        if (ArrayUtils.isNotEmpty(query.getCreateTime())) {
+            Date begin = ArrayUtils.isNotEmpty(query.getCreateTime()) ? query.getCreateTime()[0] : null;
+            Date end = ArrayUtils.isNotEmpty(query.getCreateTime()) ? query.getCreateTime()[1] : null;
+            map.put("createTime", query.getCreateTime());
+            map.put("begin", begin);
+            map.put("end", end);
+        }
         List<RepairVO> list = repairDao.getList(map);
         return new PageResult<>(list, page.getTotal());
     }
 
-    private LambdaQueryWrapper<RepairEntity> getWrapper(RepairQuery query){
+    private LambdaQueryWrapper<RepairEntity> getWrapper(RepairQuery query) {
         LambdaQueryWrapper<RepairEntity> wrapper = Wrappers.lambdaQuery();
-        wrapper.in(ArrayUtils.isNotEmpty(query.getCommunityId()),RepairEntity::getCommunityId, query.getCommunityId());
+        wrapper.in(ArrayUtils.isNotEmpty(query.getCommunityId()), RepairEntity::getCommunityId, query.getCommunityId());
         wrapper.like(StringUtils.isNotEmpty(query.getTitle()), RepairEntity::getTitle, query.getTitle());
-        wrapper.eq(StringUtils.isNotEmpty(query.getState()) , RepairEntity::getState, query.getState());
-        wrapper.eq(StringUtils.isNotEmpty(query.getType()) , RepairEntity::getType, query.getType());
+        wrapper.eq(StringUtils.isNotEmpty(query.getState()), RepairEntity::getState, query.getState());
+        wrapper.eq(StringUtils.isNotEmpty(query.getType()), RepairEntity::getType, query.getType());
 //        wrapper.ge(query.getCreateTime() != null,RepairEntity::getCreateTime, query.getCreateTime());
         wrapper.between(ArrayUtils.isNotEmpty(query.getCreateTime()), RepairEntity::getCreateTime, ArrayUtils.isNotEmpty(query.getCreateTime()) ? query.getCreateTime()[0] : null, ArrayUtils.isNotEmpty(query.getCreateTime()) ? query.getCreateTime()[1] : null);
         return wrapper;
