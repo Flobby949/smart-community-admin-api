@@ -26,4 +26,16 @@
         </if>
         LIMIT ${page - 1}, ${limit}
     </select>
+    <select id="selectAllRecord" resultType="com.soft2242.one.vo.PassRecordVO">
+        SELECT
+            tc.community_name AS communityName,
+            pr.create_time
+        FROM
+            t_pass_record pr
+                LEFT JOIN t_community tc ON pr.community_id = tc.id
+        WHERE
+            pr.deleted = 0
+        ORDER BY
+            pr.create_time
+    </select>
 </mapper>

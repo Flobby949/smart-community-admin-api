@@ -18,4 +18,6 @@ import java.util.List;
 public interface PassRecordDao extends BaseDao<PassRecordEntity> {
 
     List<PassRecordVO> selectPageByQuery(PassRecordQuery query);
+
+    List<PassRecordVO> selectAllRecord();
 }

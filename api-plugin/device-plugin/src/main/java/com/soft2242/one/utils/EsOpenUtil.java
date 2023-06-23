@@ -116,6 +116,7 @@ public class EsOpenUtil {
         map.put("deviceSerial", serialNumber);
         map.put("protocol", 2);
         String response = PostUtils.sendPost(getSearchUrl, map);
+        log.info(response);
         return JSON.parseObject(response, ResponseBody.class);
     }
 

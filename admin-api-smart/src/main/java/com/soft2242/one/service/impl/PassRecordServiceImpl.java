@@ -37,6 +37,11 @@ public class PassRecordServiceImpl extends BaseServiceImpl<PassRecordDao, PassRe
         return new PageResult<>(recordList, page.getTotal());
     }
 
+    @Override
+    public List<PassRecordVO> allRecord() {
+        return baseMapper.selectAllRecord();
+    }
+
     private LambdaQueryWrapper<PassRecordEntity> getWrapper(PassRecordQuery query){
         LambdaQueryWrapper<PassRecordEntity> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(query.getDoorId() != null, PassRecordEntity::getDoorId, query.getDoorId());

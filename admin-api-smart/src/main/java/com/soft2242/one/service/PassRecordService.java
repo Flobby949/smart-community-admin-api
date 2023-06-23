@@ -6,6 +6,8 @@ import com.soft2242.one.entity.PassRecordEntity;
 import com.soft2242.one.query.PassRecordQuery;
 import com.soft2242.one.vo.PassRecordVO;
 
+import java.util.List;
+
 /**
  * 通行记录
  *
@@ -15,5 +17,7 @@ import com.soft2242.one.vo.PassRecordVO;
 public interface PassRecordService extends BaseService<PassRecordEntity> {
 
     PageResult<PassRecordVO> page(PassRecordQuery query);
+
+    List<PassRecordVO> allRecord();
 
 }
